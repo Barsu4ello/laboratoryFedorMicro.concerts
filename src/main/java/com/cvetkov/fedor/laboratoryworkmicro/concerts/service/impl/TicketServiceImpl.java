@@ -1,12 +1,16 @@
 package com.cvetkov.fedor.laboratoryworkmicro.concerts.service.impl;
 
+import com.cvetkov.fedor.laboratoryworkmicro.concerts.feign.UserFeignClient;
 import com.cvetkov.fedor.laboratoryworkmicro.concerts.repository.TicketRepository;
 import com.cvetkov.fedor.laboratoryworkmicro.concerts.service.TicketService;
 import com.cvetkov.fedor.laboratoryworkmicro.entities.dto.request.TicketRequest;
 import com.cvetkov.fedor.laboratoryworkmicro.entities.dto.response.TicketResponse;
 import com.cvetkov.fedor.laboratoryworkmicro.entities.dto.update.TicketUpdate;
 import com.cvetkov.fedor.laboratoryworkmicro.entities.mapper.TicketMapper;
+import com.cvetkov.fedor.laboratoryworkmicro.utils.exception.ExceptionResponseStatusChecker;
 import com.cvetkov.fedor.laboratoryworkmicro.utils.exception.ObjectNotFoundException;
+
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +23,7 @@ import java.util.List;
 public class TicketServiceImpl implements TicketService {
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
+    private final UserFeignClient userFeignClient;
 
     @Override
     public Page<TicketResponse> getAllPage(Pageable pageable) {
@@ -40,11 +45,19 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public void save(TicketRequest ticketRequest) {
+        // Проверим есть такой пользователь в микросервисе users, иначе будет FeignException
+        Long userId = ticketRequest.getUserId();
+        userFeignClient.getUserById(userId);
+
         ticketRepository.save(ticketMapper.ticketRequestToTicket(ticketRequest));
     }
 
     @Override
     public void update(TicketUpdate ticketUpdate) {
+        // Проверим есть такой пользователь в микросервисе users, иначе будет FeignException
+        Long userId = ticketUpdate.getUserId();
+        userFeignClient.getUserById(userId);
+
         ticketRepository.save(ticketMapper.ticketUpdateToTicket(ticketUpdate));
     }
 

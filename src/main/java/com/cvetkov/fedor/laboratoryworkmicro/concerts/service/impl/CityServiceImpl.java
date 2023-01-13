@@ -1,5 +1,6 @@
 package com.cvetkov.fedor.laboratoryworkmicro.concerts.service.impl;
 
+import com.cvetkov.fedor.laboratoryworkmicro.concerts.feign.UserFeignClient;
 import com.cvetkov.fedor.laboratoryworkmicro.concerts.repository.CityRepository;
 import com.cvetkov.fedor.laboratoryworkmicro.concerts.service.CityService;
 import com.cvetkov.fedor.laboratoryworkmicro.entities.dto.request.CityRequest;
@@ -19,8 +20,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CityServiceImpl implements CityService {
     private final CityRepository cityRepository;
-//    private final UserRepository userRepository;
     private final CityMapper cityMapper;
+    private final UserFeignClient userFeignClient;
 
     @Override
     public Page<CityResponse> getAllPage(Pageable pageable) {
@@ -53,9 +54,7 @@ public class CityServiceImpl implements CityService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-//        List<User> users = userRepository.findUSersByCityId(id);
-//        users = users.stream().peek(user -> user.setCity(null)).collect(Collectors.toList());
-//        userRepository.saveAll(users);
+        userFeignClient.changeCityIdToNull(id);
         cityRepository.deleteById(id);
     }
 }
