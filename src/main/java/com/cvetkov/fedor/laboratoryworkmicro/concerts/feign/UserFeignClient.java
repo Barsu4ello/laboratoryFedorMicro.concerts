@@ -24,7 +24,7 @@ public interface UserFeignClient {
 
     default UserResponse getUserByIdUnavailable(Exception e) {
         ExceptionResponseStatusChecker.check404StatusAndExceptionFeignType("User", e);
-        throw new ServiceUnavailableException("User server is not available", e);
+        throw new ServiceUnavailableException("User server is not available. Check User application", e);
     }
 
     default void changeCityUnavailable(Exception e) {
