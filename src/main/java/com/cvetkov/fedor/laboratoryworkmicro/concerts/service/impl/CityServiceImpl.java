@@ -21,7 +21,7 @@ import java.util.List;
 public class CityServiceImpl implements CityService {
     private final CityRepository cityRepository;
     private final CityMapper cityMapper;
-    private final UserFeignClient userFeignClient;
+//    private final UserFeignClient userFeignClient;
 
     @Override
     public Page<CityResponse> getAllPage(Pageable pageable) {
@@ -54,7 +54,7 @@ public class CityServiceImpl implements CityService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        userFeignClient.changeCityIdToNull(id);
+//        userFeignClient.changeCityIdToNull(id);  //(c KeyCloak это не надо)
         cityRepository.deleteById(id);
     }
 }
